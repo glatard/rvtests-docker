@@ -1,5 +1,5 @@
 {
-    "command-line": "rvtest [INVCF] [INBGEN] [INBGENSAMPLE] [INKGG] [OUT] [OUTPUTRAW] [COVAR] [COVARNAME] [SEX] [PHENO] [INVERSENORMAL] [USERESIDUALASPHENOTYPE] [MPHENO] [PHENONAME] [QTL] [MULTIPLEPHENO] [DOSAGE] [MULTIPLEALLELE] [XLABEL] [XPARREGION] [PEOPLEINCLUDEID] [PEOPLEINCLUDEFILE] [PEOPLEEXCLUDEID] [PEOPLEEXCLUDEFILE] [RANGELIST] [RANGEFILE] [SITEFILE] [SITEDEPTHMIN] [SITEDEPTHMAX] [SITEMACMIN] [ANNOTYPE] [INDVDEPTHMIN] [INDVDEPTHMAX] [INDVQUALMIN] [SINGLE] [BURDEN] [VT] [KERNEL] [META] [KINSHIP] [XHEMIKINSHIP] [KINSHIPEIGEN] [XHEMIKINSHIPEIGEN] [BOLTPLINK] [BOLTPLINKNOCHECK] [GENEFILE] [GENE] [SETLIST] [SETFILE] [SET] [FREQUPPER] [FREQLOWER] [IMPUTEPHENO] [IMPUTECOV] [CONDITION] [NOWEB] [HIDECOVAR] [OUTPUTID]",
+    "command-line": "rvtest [INVCF] [INBGEN] [INBGENSAMPLE] [INKGG] [OUT] [OUTPUTRAW] [COVAR] [COVARNAME] [SEX] [PHENO] [INVERSENORMAL] [USERESIDUALASPHENOTYPE] [MPHENO] [PHENONAME] [QTL] [MULTIPLEPHENO] [DOSAGE] [MULTIPLEALLELE] [XLABEL] [XPARREGION] [PEOPLEINCLUDEID] [PEOPLEINCLUDEFILE] [PEOPLEEXCLUDEID] [PEOPLEEXCLUDEFILE] [RANGELIST] [RANGEFILE] [SITEFILE] [SITEDEPTHMIN] [SITEDEPTHMAX] [SITEMACMIN] [ANNOTYPE] [INDVDEPTHMIN] [INDVDEPTHMAX] [INDVQUALMIN] [SINGLE] [BURDEN] [VT] [KERNEL] [META] [KINSHIP] [XHEMIKINSHIP] [KINSHIPEIGEN] [XHEMIKINSHIPEIGEN] [BOLTPLINK] [BOLTPLINKNOCHECK] [GENEFILE] [GENE] [SETLIST] [SETFILE] [SET] [FREQUPPER] [FREQLOWER] [IMPUTE] [IMPUTEPHENO] [IMPUTECOV] [CONDITION] [NOWEB] [HIDECOVAR] [OUTPUTID]",
     "container-image": {
         "image": "glatard/rvtests:2.1.0",
         "index": "docker://",
@@ -58,6 +58,31 @@
             "id": "association_model",
             "name": "Association Model",
             "members": ["single", "burden", "vt", "kernel", "meta"]
+        },
+        {
+            "id": "family_based_models",
+            "name": "Family-based Models",
+            "members": ["kinship", "xHemiKinship", "kinshipEigen", "xHemiKinshipEigen", "boltPlink", "boltPlinkNoCheck"]
+        },
+        {
+            "id": "grouping_unit",
+            "name": "Grouping Unit",
+            "members": ["geneFile", "gene", "setList", "setFile", "set"]
+        },
+        {
+            "id": "frequency_cutoff",
+            "name": "Frequency Cutoff",
+            "members": ["freqUpper", "freqLower"]
+        },
+        {
+            "id": "missing_data",
+            "name": "Missing Data",
+            "members": ["impute", "imputePheno", "imputeCov"]
+        },
+        {
+            "id": "conditional_analysis",
+            "name": "Conditional Analysis",
+            "members": ["condition"]
         }
     ],
     "inputs": [
@@ -435,7 +460,8 @@
             "command-line-flag": "--kinship",
             "type": "File",
             "value-key": "[KINSHIP]",
-            "description": "Specify a kinship file for autosomal analysis, use"
+            "optional": true,
+            "description": "Specify a kinship file for autosomal analysis, use vcf2kinship to generate"
         },
         {
             "id": "xHemiKinship",
@@ -443,6 +469,7 @@
             "command-line-flag": "--xHemiKinship",
             "type": "String",
             "value-key": "[XHEMIKINSHIP]",
+            "optional": true,
             "description": "Provide kinship for the chromosome X hemizygote region"
         },
         {
@@ -451,7 +478,8 @@
             "command-line-flag": "--kinshipEigen",
             "type": "File",
             "value-key": "[KINSHIPEIGEN]",
-            "description": "Specify eigen decomposition results of a kinship file"
+            "optional": true,
+            "description": "Specify eigen decomposition results of a kinship file for X analysis"
         },
         {
             "id": "xHemiKinshipEigen",
@@ -459,7 +487,8 @@
             "command-line-flag": "--xHemiKinshipEigen",
             "type": "File",
             "value-key": "[XHEMIKINSHIPEIGEN]",
-            "description": "Specify eigen decomposition results of a kinship file"
+            "optional": true,
+            "description": "Specify eigen decomposition results of a kinship file for X analysis"
         },
         {
             "id": "boltPlink",
@@ -467,13 +496,15 @@
             "command-line-flag": "--boltPlink",
             "type": "String",
             "value-key": "[BOLTPLINK]",
+            "optional": true,
             "description": "Specify a prefix of binary PLINK inputs for BoltLMM"
         },
         {
             "id": "boltPlinkNoCheck",
             "name": "boltPlinkNoCheck",
             "command-line-flag": "--boltPlinkNoCheck",
-            "type": "File",
+            "type": "Flag",
+            "optional": true,
             "value-key": "[BOLTPLINKNOCHECK]",
             "description": "Not checking MAF and missingness for binary PLINK file"
         },
@@ -483,6 +514,7 @@
             "command-line-flag": "--geneFile",
             "type": "File",
             "value-key": "[GENEFILE]",
+            "optional": true,
             "description": "Specify a gene file (for burden tests);"
         },
         {
@@ -491,6 +523,7 @@
             "command-line-flag": "--gene",
             "type": "String",
             "value-key": "[GENE]",
+            "optional": true,
             "description": "Specify which genes to test"
         },
         {
@@ -498,6 +531,8 @@
             "name": "setList",
             "command-line-flag": "--setList",
             "type": "String",
+            "list": true,
+            "optional": true,
             "value-key": "[SETLIST]",
             "description": "Specify a list to test (for burden tests);"
         },
@@ -505,7 +540,8 @@
             "id": "setFile",
             "name": "setFile",
             "command-line-flag": "--setFile",
-            "type": "String",
+            "type": "File",
+            "optional": true,
             "value-key": "[SETFILE]",
             "description": "Specify a list file (for burden tests, first 2 columns: setName chr:beg-end);"
         },
@@ -514,6 +550,7 @@
             "name": "set",
             "command-line-flag": "--set",
             "type": "String",
+            "optional": true,
             "value-key": "[SET]",
             "description": "Specify which set to test (1st column);"
         },
@@ -521,39 +558,54 @@
             "id": "freqUpper",
             "name": "freqUpper",
             "command-line-flag": "--freqUpper",
-            "type": "String",
+            "type": "Number",
+            "optional": true,
             "value-key": "[FREQUPPER]",
-            "description": "Specify upper minor allele frequency bound to be"
+            "description": "Specify upper minor allele frequency bound to be included in analysis"
         },
         {
             "id": "freqLower",
             "name": "freqLower",
             "command-line-flag": "--freqLower",
-            "type": "String",
+            "type": "Number",
             "value-key": "[FREQLOWER]",
-            "description": "Specify lower minor allele frequency bound to be"
+            "description": "Specify lower minor allele frequency bound to be included in analysis"
+        },
+        {
+            "id": "impute",
+            "name": "impute",
+            "command-line-flag": "--impute",
+            "type": "String",
+            "value-key": "[IMPUTE]",
+            "optional": true,
+            "value-choices": ["mean", "hwe", "drop"],
+            "description": "Impute missing genotype (default:mean):  mean, hwe, and drop"
         },
         {
             "id": "imputePheno",
             "name": "imputePheno",
             "command-line-flag": "--imputePheno",
-            "type": "String",
+            "type": "Flag",
+            "optional": true,
             "value-key": "[IMPUTEPHENO]",
-            "description": "Impute phenotype to mean of those have genotypes but no"
+            "description": "Impute phenotype to mean of those have genotypes but no phenotypes"
         },
         {
             "id": "imputeCov",
             "name": "imputeCov",
             "command-line-flag": "--imputeCov",
-            "type": "String",
+            "type": "Flag",
+            "optional": true,
             "value-key": "[IMPUTECOV]",
-            "description": "Impute each covariate to its mean, instead of drop"
+            "description": "Impute each covariate to its mean, instead of drop samples with missing covariates"
         },
         {
             "id": "condition",
             "name": "condition",
             "command-line-flag": "--condition",
             "type": "String",
+            "list": true,
+            "optional": true,
             "value-key": "[CONDITION]",
             "description": "Specify markers to be conditions (specify range);"
         },
