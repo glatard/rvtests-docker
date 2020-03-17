@@ -1,12 +1,14 @@
 {
-    "command-line": "rvtest [INVCF] [INBGEN] [INBGENSAMPLE] [INKGG] [OUT] [OUTPUTRAW] [COVAR] [COVARNAME] [SEX] [PHENO] [INVERSENORMAL] [USERESIDUALASPHENOTYPE] [MPHENO] [PHENONAME] [QTL] [MULTIPLEPHENO] [DOSAGE] [MULTIPLEALLELE] [XLABEL] [XPARREGION] [PEOPLEINCLUDEID] [PEOPLEINCLUDEFILE] [PEOPLEEXCLUDEID] [PEOPLEEXCLUDEFILE] [RANGELIST] [RANGEFILE] [SITEFILE] [SITEDEPTHMIN] [SITEDEPTHMAX] [SITEMACMIN] [ANNOTYPE] [INDVDEPTHMIN] [INDVDEPTHMAX] [INDVQUALMIN] [SINGLE] [BURDEN] [VT] [KERNEL] [META] [KINSHIP] [XHEMIKINSHIP] [KINSHIPEIGEN] [XHEMIKINSHIPEIGEN] [BOLTPLINK] [BOLTPLINKNOCHECK] [GENEFILE] [GENE] [SETLIST] [SETFILE] [SET] [FREQUPPER] [FREQLOWER] [IMPUTE] [IMPUTEPHENO] [IMPUTECOV] [CONDITION] [NOWEB] [HIDECOVAR] [OUTPUTID]",
+    "name": "rvtest",
+    "description": "Rvtests, which stands for Rare Variant tests, is a flexible software package for genetic association analysis for sequence datasets. Since its inception, rvtests was developed as a comprehensive tool to support genetic association analysis and meta-analysis. It can analyze both unrelated individual and related (family-based) individuals for both quantitative and binary outcomes. It includes a variety of association tests (e.g. single variant score test, burden test, variable threshold test, SKAT test, fast linear mixed model score test). It takes VCF/BGEN/PLINK format as genotype input file and takes PLINK format phenotype file and covariate file. With new implementation of the BOLT-LMM/MINQUE algorithm as well as a series of software engineering optimizations, our software package is capable of analyzing datasets of up to 1,000,000 individuals in linear mixed models on a computer workstation, which makes our tool one of the very few options for analyzing large biobank scale datasets, such as UK Biobank. RVTESTS supports both single variant and gene-level tests. It also allows for highly effcient generation of covariance matrices between score statistics in RAREMETAL format, which can be used to support the next wave of meta-analysis that incorporates large biobank datasets. A (much) larger sample size can be handled using linear regression or logistic regression models.",
+    "tool-version": "2.1.0",
+    "schema-version": "0.5",
+    "command-line": "rvtest [INVCF] [INBGEN] [INBGENSAMPLE] [INKGG] [OUT] [OUTPUTRAW] [COVAR] [COVARNAME] [SEX] [PHENO] [INVERSENORMAL] [USERESIDUALASPHENOTYPE] [MPHENO] [PHENONAME] [QTL] [MULTIPLEPHENO] [DOSAGE] [MULTIPLEALLELE] [XLABEL] [XPARREGION] [PEOPLEINCLUDEID] [PEOPLEINCLUDEFILE] [PEOPLEEXCLUDEID] [PEOPLEEXCLUDEFILE] [RANGELIST] [RANGEFILE] [SITEFILE] [SITEDEPTHMIN] [SITEDEPTHMAX] [SITEMACMIN] [ANNOTYPE] [INDVDEPTHMIN] [INDVDEPTHMAX] [INDVQUALMIN] [SINGLE] [BURDEN] [VT] [KERNEL] [META] [KINSHIP] [XHEMIKINSHIP] [KINSHIPEIGEN] [XHEMIKINSHIPEIGEN] [BOLTPLINK] [BOLTPLINKNOCHECK] [GENEFILE] [GENE] [SETLIST] [SETFILE] [SET] [FREQUPPER] [FREQLOWER] [IMPUTE] [IMPUTEPHENO] [IMPUTECOV] [CONDITION] [NOWEB] [HIDECOVAR] [NUMTHREAD] [OUTPUTID]",
     "container-image": {
         "image": "glatard/rvtests:2.1.0",
         "index": "docker://",
         "type": "singularity"
     },
-    "description": "Rvtests, which stands for Rare Variant tests, is a flexible software package for genetic association analysis for sequence datasets. Since its inception, rvtests was developed as a comprehensive tool to support genetic association analysis and meta-analysis. It can analyze both unrelated individual and related (family-based) individuals for both quantitative and binary outcomes. It includes a variety of association tests (e.g. single variant score test, burden test, variable threshold test, SKAT test, fast linear mixed model score test). It takes VCF/BGEN/PLINK format as genotype input file and takes PLINK format phenotype file and covariate file. With new implementation of the BOLT-LMM/MINQUE algorithm as well as a series of software engineering optimizations, our software package is capable of analyzing datasets of up to 1,000,000 individuals in linear mixed models on a computer workstation, which makes our tool one of the very few options for analyzing large biobank scale datasets, such as UK Biobank. RVTESTS supports both single variant and gene-level tests. It also allows for highly effcient generation of covariance matrices between score statistics in RAREMETAL format, which can be used to support the next wave of meta-analysis that incorporates large biobank datasets. A (much) larger sample size can be handled using linear regression or logistic regression models.",
-    "name": "rvtest",
     "groups": [
         {
             "id": "inputs",
@@ -83,6 +85,11 @@
             "id": "conditional_analysis",
             "name": "Conditional Analysis",
             "members": ["condition"]
+        },
+        {
+            "id": "auxiliary_functions",
+            "name": "Auxiliary Functions",
+            "members": ["noweb", "hidecovar", "numThread", "outputID"]
         }
     ],
     "inputs": [
@@ -159,7 +166,7 @@
             "value-key": "[COVARNAME]",
             "optional": true,
             "requires-inputs": ["covar"],
-            "description": "Specify the column name in covariate file to be included in analysis"
+            "description": "Specify the column names in covariate file to be included in analysis"
         },
         {
             "id": "sex",
@@ -212,9 +219,7 @@
             "id": "phenoname",
             "name": "phenoname",
             "command-line-flag": "--pheno-name",
-            "type": "Number",
-            "integer": true,
-            "minimum": 1,
+            "type": "String",
             "optional": true,
             "value-key": "[PHENONAME]",
             "description": "Specify which phenotype column to read by header"
@@ -451,6 +456,9 @@
             "command-line-flag": "--meta",
             "type": "String",
             "value-key": "[META]",
+            "list": true,
+            "list-separator": ",",
+            "optional": true,
             "description": "Meta-analysis related functions to generate summary statistics, choose from: score, cov, dominant, recessive",
             "value-choices": [ "score", "cov", "dominant", "recessive"]
         },
@@ -568,6 +576,7 @@
             "name": "freqLower",
             "command-line-flag": "--freqLower",
             "type": "Number",
+            "optional": true,
             "value-key": "[FREQLOWER]",
             "description": "Specify lower minor allele frequency bound to be included in analysis"
         },
@@ -613,25 +622,39 @@
             "id": "noweb",
             "name": "noweb",
             "command-line-flag": "--noweb",
-            "type": "String",
+            "type": "Flag",
             "value-key": "[NOWEB]",
+            "optional": true,
             "description": "Skip checking new version"
         },
         {
             "id": "hidecovar",
             "name": "hidecovar",
             "command-line-flag": "--hide-covar",
-            "type": "String",
+            "type": "Flag",
+            "optional": true,
             "value-key": "[HIDECOVAR]",
             "description": "Surpress output lines of covariates"
+        },
+        {
+            "id": "numThread",
+            "name": "numThread",
+            "command-line-flag": "--numThread",
+            "type": "Number",
+            "integer": true,
+            "minimum": 1,
+            "optional": true,
+            "value-key": "[NUMTHREAD]",
+            "description": "Specify number of threads (default:1)"
         },
         {
             "id": "outputID",
             "name": "outputID",
             "command-line-flag": "--outputID",
-            "type": "String",
+            "type": "Flag",
+            "optional": true,
             "value-key": "[OUTPUTID]",
-            "description": "Output VCF IDs in single-variant assocition results"
+            "description": "Output VCF IDs in single-variant association results"
         }
     ],
     "output-files": [
@@ -642,8 +665,91 @@
             "path-template": "[OUT]*"
         }
     ],
-    "schema-version": "0.5",
     "tags": { "genetics": true,
-              "ENIGMA": true},
-    "tool-version": "2.1.0"
+        "ENIGMA": true},
+    "tests": [
+        {
+            "name": "test1",
+            "invocation": {
+                "pheno": "/usr/share/example/pheno",
+                "inVcf": "/usr/share/example/example.vcf",
+                "single": "wald",
+                "out": "out1"
+            },
+            "assertions": {
+                "exit-code": 0
+            }
+        },
+        {
+            "name": "test2",
+            "invocation": {
+                "pheno": "/usr/share/example/pheno",
+                "inVcf": "/usr/share/example/example.vcf",
+                "mpheno": 2,
+                "single": "wald",
+                "out": "out2"
+            },
+            "assertions": {
+                "exit-code": 0
+            }
+        },
+        {
+            "name": "test3",
+            "invocation": {
+                "pheno": "/usr/share/example/pheno",
+                "inVcf": "/usr/share/example/example.vcf",
+                "phenoname": "y2",
+                "single": "wald",
+                "out": "out3"
+            },
+            "assertions": {
+                "exit-code": 0
+            }
+        },
+        {
+            "name": "test4",
+            "invocation": {
+                "pheno": "/usr/share/example/pheno",
+                "inVcf": "/usr/share/example/example.vcf",
+                "covar": "/usr/share/example/covar",
+                "covarname": "c1,c2",
+                "single": "wald",
+                "out": "out4"
+            },
+            "assertions": {
+                "exit-code": 0
+            }
+        },
+        {
+            "name": "test5",
+            "invocation": {
+                "pheno": "/usr/share/example/pheno",
+                "inVcf": "/usr/share/example/example.vcf",
+                "covar": "/usr/share/example/covar.missing",
+                "covarname": "c1,c2",
+                "single": "wald",
+                "out": "out5"
+            },
+            "assertions": {
+                "exit-code": 0
+            }
+        },
+        {
+            "name": "test6",
+            "invocation": {
+                "pheno": "/usr/share/example/pheno",
+                "inVcf": "/usr/share/example/example.vcf",
+                "meta": ["score","cov"],
+                "covar": "/usr/share/example/covar",
+                "covarname": "c1,c2",
+                "useResidualAsPhenotype": true,
+                "inverseNormal": true,
+                "single": "wald",
+                "out": "out6"
+            },
+            "assertions": {
+                "exit-code": 0
+            }
+        }
+    ]
 }
