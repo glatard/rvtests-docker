@@ -1,5 +1,5 @@
 {
-    "command-line": "rvtest [INVCF] [INBGEN] [INBGENSAMPLE] [INKGG] [OUT] [OUTPUTRAW] [COVAR] [COVARNAME] [SEX] [PHENO] [INVERSENORMAL] [USERESIDUALASPHENOTYPE] [PHENONAME] [QTL] [MULTIPLEPHENO] [DOSAGE] [MULTIPLEALLELE] [PEOPLEINCLUDEID] [PEOPLEINCLUDEFILE] [PEOPLEEXCLUDEID] [PEOPLEEXCLUDEFILE] [RANGEFILE] [CHR] [SITEFILE] [SITEDEPTHMIN] [SITEDEPTHMAX] [SITEMACMIN] [ANNOTYPE] [INDVDEPTHMIN] [INDVDEPTHMAX] [INDVQUALMIN] [META] [KINSHIP] [XHEMIKINSHIP] [KINSHIPEIGEN] [XHEMIKINSHIPEIGEN] [BOLTPLINK] [BOLTPLINKNOCHECK] [GENEFILE] [GENE] [SETLIST] [SETFILE] [SET] [FREQUPPER] [FREQLOWER] [IMPUTEPHENO] [IMPUTECOV] [CONDITION] [NOWEB] [HIDECOVAR] [OUTPUTID]",
+    "command-line": "rvtest [INVCF] [INBGEN] [INBGENSAMPLE] [INKGG] [OUT] [OUTPUTRAW] [COVAR] [COVARNAME] [SEX] [PHENO] [INVERSENORMAL] [USERESIDUALASPHENOTYPE] [MPHENO] [PHENONAME] [QTL] [MULTIPLEPHENO] [DOSAGE] [MULTIPLEALLELE] [XLABEL] [XPARREGION] [PEOPLEINCLUDEID] [PEOPLEINCLUDEFILE] [PEOPLEEXCLUDEID] [PEOPLEEXCLUDEFILE] [RANGELIST] [RANGEFILE] [SITEFILE] [SITEDEPTHMIN] [SITEDEPTHMAX] [SITEMACMIN] [ANNOTYPE] [INDVDEPTHMIN] [INDVDEPTHMAX] [INDVQUALMIN] [SINGLE] [BURDEN] [VT] [KERNEL] [META] [KINSHIP] [XHEMIKINSHIP] [KINSHIPEIGEN] [XHEMIKINSHIPEIGEN] [BOLTPLINK] [BOLTPLINKNOCHECK] [GENEFILE] [GENE] [SETLIST] [SETFILE] [SET] [FREQUPPER] [FREQLOWER] [IMPUTEPHENO] [IMPUTECOV] [CONDITION] [NOWEB] [HIDECOVAR] [OUTPUTID]",
     "container-image": {
         "image": "glatard/rvtests:2.1.0",
         "index": "docker://",
@@ -23,6 +23,41 @@
             "id": "specify_covariate",
             "name": "Specify Covariate",
             "members": ["covar", "covarname", "sex"]
+        },
+        {
+            "id": "specify_phenotype",
+            "name": "Specify Phenotype",
+            "members": ["pheno", "inverseNormal", "useResidualAsPhenotype", "mpheno", "phenoname", "qtl", "multiplePheno"]
+        },
+        {
+            "id": "specify_genotype",
+            "name": "Specify Genotype",
+            "members": ["dosage", "multipleAllele"]
+        },
+        {
+            "id": "chromosome_x_options",
+            "name": "Chromosome X Options",
+            "members": ["xLabel", "xParRegion"]
+        },
+        {
+            "id": "people_filter",
+            "name": "People Filter",
+            "members": ["peopleIncludeID", "peopleIncludeFile", "peopleExcludeID", "peopleExcludeFile"]
+        },
+        {
+            "id": "site_filter",
+            "name": "Site Filter",
+            "members": ["rangeList", "rangeFile", "siteFile", "siteDepthMin", "siteDepthMax", "siteMACMin", "annoType"]
+        },
+        {
+            "id": "genotype_filter",
+            "name": "Genotype Filter",
+            "members": ["indvDepthMin", "indvDepthMax", "indvQualMin"]
+        },
+        {
+            "id": "association_model",
+            "name": "Association Model",
+            "members": ["single", "burden", "vt", "kernel", "meta"]
         }
     ],
     "inputs": [
@@ -123,7 +158,8 @@
             "id": "inverseNormal",
             "name": "inverseNormal",
             "command-line-flag": "--inverseNormal",
-            "type": "String",
+            "type": "Flag",
+            "optional": true,
             "value-key": "[INVERSENORMAL]",
             "description": "Transform phenotype like normal distribution"
         },
@@ -131,15 +167,30 @@
             "id": "useResidualAsPhenotype",
             "name": "useResidualAsPhenotype",
             "command-line-flag": "--useResidualAsPhenotype",
-            "type": "String",
+            "type": "Flag",
+            "optional": true,
             "value-key": "[USERESIDUALASPHENOTYPE]",
-            "description": "Fit covariate ~ phenotype, use residual to replace"
+            "description": "Fit covariate ~ phenotype, use residual to replace phenotype"
+        },
+        {
+            "id": "mpheno",
+            "name": "mpheno",
+            "command-line-flag": "--mpheno",
+            "type": "Number",
+            "integer": true,
+            "minimum": 1,
+            "optional": true,
+            "value-key": "[MPHENO]",
+            "description": "Specify which phenotype column to read (default: 1)"
         },
         {
             "id": "phenoname",
             "name": "phenoname",
             "command-line-flag": "--pheno-name",
-            "type": "String",
+            "type": "Number",
+            "integer": true,
+            "minimum": 1,
+            "optional": true,
             "value-key": "[PHENONAME]",
             "description": "Specify which phenotype column to read by header"
         },
@@ -147,8 +198,9 @@
             "id": "qtl",
             "name": "qtl",
             "command-line-flag": "--qtl",
-            "type": "String",
+            "type": "Flag",
             "value-key": "[QTL]",
+            "optional": true,
             "description": "Treat phenotype as quantitative trait"
         },
         {
@@ -156,8 +208,9 @@
             "name": "multiplePheno",
             "command-line-flag": "--multiplePheno",
             "type": "File",
+            "optional": true,
             "value-key": "[MULTIPLEPHENO]",
-            "description": "Specify aa template file for analyses of more than one"
+            "description": "Specify a template file for analyses of more than one phenotype"
         },
         {
             "id": "dosage",
@@ -165,6 +218,7 @@
             "command-line-flag": "--dosage",
             "type": "String",
             "value-key": "[DOSAGE]",
+            "optional": true,
             "description": "Specify which dosage tag to use. (e.g. EC or DS);"
         },
         {
@@ -172,14 +226,36 @@
             "name": "multipleAllele",
             "command-line-flag": "--multipleAllele",
             "type": "String",
+            "optional": true,
             "value-key": "[MULTIPLEALLELE]",
             "description": "Support multi-allelic genotypes"
+        },
+        {
+            "id": "xLabel",
+            "name": "xLabel",
+            "command-line-flag": "--xLabel",
+            "type": "String",
+            "optional": true,
+            "value-key": "[XLABEL]",
+            "description": "Specify X chromosome label (default: 23|X);"
+        },
+        {
+            "id": "xParRegion",
+            "name": "xParRegion",
+            "command-line-flag": "--xParRegion",
+            "type": "String",
+            "optional": true,
+            "value-key": "[XPARREGION]",
+            "description": "Specify PAR region (default: hg19);, can be build number e.g. hg38, b37; or specify region, e.g. '60001-2699520,154931044-155260560'"
         },
         {
             "id": "peopleIncludeID",
             "name": "peopleIncludeID",
             "command-line-flag": "--peopleIncludeID",
-            "type": "String",
+            "type": "Number",
+            "optional": true,
+            "list": true,
+            "integer": true,
             "value-key": "[PEOPLEINCLUDEID]",
             "description": "List IDs of people that will be included in study"
         },
@@ -188,6 +264,7 @@
             "name": "peopleIncludeFile",
             "command-line-flag": "--peopleIncludeFile",
             "type": "File",
+            "optional": true,
             "value-key": "[PEOPLEINCLUDEFILE]",
             "description": "From given file, set IDs of people that will be"
         },
@@ -195,9 +272,12 @@
             "id": "peopleExcludeID",
             "name": "peopleExcludeID",
             "command-line-flag": "--peopleExcludeID",
-            "type": "String",
+            "type": "Number",
+            "integer": true,
+            "list": true,
+            "optional": true,
             "value-key": "[PEOPLEEXCLUDEID]",
-            "description": "List IDs of people that will be included in study"
+            "description": "List IDs of people that will be excluded from study"
         },
         {
             "id": "peopleExcludeFile",
@@ -205,87 +285,140 @@
             "command-line-flag": "--peopleExcludeFile",
             "type": "File",
             "value-key": "[PEOPLEEXCLUDEFILE]",
-            "description": "From given file, set IDs of people that will be"
+            "optional": true,
+            "description": "From given file, set IDs of people that will be excluded from study"
+        },
+        {
+            "id": "rangeList",
+            "name": "rangeList",
+            "command-line-flag": "--rangeList",
+            "type": "File",
+            "list": true,
+            "optional": true,
+            "value-key": "[RANGELIST]",
+            "description": "Specify some ranges to use, please use chr:begin-end format."
         },
         {
             "id": "rangeFile",
             "name": "rangeFile",
             "command-line-flag": "--rangeFile",
             "type": "File",
+            "optional": true,
             "value-key": "[RANGEFILE]",
-            "description": "Specify the file containing ranges, please use"
-        },
-        {
-            "id": "chr",
-            "name": "chr",
-            "command-line-flag": "chr",
-            "type": "String",
-            "value-key": "[CHR]",
-            "description": "begin-end format."
+            "description": "Specify the file containing ranges, please use chr:begin-end format."
         },
         {
             "id": "siteFile",
             "name": "siteFile",
             "command-line-flag": "--siteFile",
             "type": "File",
+            "optional": true,
             "value-key": "[SITEFILE]",
-            "description": "Specify the file containing sites to include, please"
+            "description": "Specify the file containing sites to include, please use \"chr pos\" format."
         },
         {
             "id": "siteDepthMin",
             "name": "siteDepthMin",
             "command-line-flag": "--siteDepthMin",
-            "type": "String",
+            "type": "Number",
+            "optional": true,
             "value-key": "[SITEDEPTHMIN]",
-            "description": "Specify minimum depth(inclusive); to be included in"
+            "description": "Specify minimum depth(inclusive); to be included in analysis"
         },
         {
             "id": "siteDepthMax",
             "name": "siteDepthMax",
             "command-line-flag": "--siteDepthMax",
-            "type": "String",
+            "type": "Number",
+            "optional": true,
             "value-key": "[SITEDEPTHMAX]",
-            "description": "Specify maximum depth(inclusive); to be included in"
+            "description": "Specify maximum depth(inclusive); to be included in analysis"
         },
         {
             "id": "siteMACMin",
             "name": "siteMACMin",
             "command-line-flag": "--siteMACMin",
-            "type": "String",
+            "type": "Number",
+            "integer": true,
+            "optional": true,
             "value-key": "[SITEMACMIN]",
-            "description": "Specify minimum Minor Allele Count(inclusive); to be"
+            "description": "Specify minimum Minor Allele Count(inclusive); to be included in analysis"
         },
         {
             "id": "annoType",
             "name": "annoType",
             "command-line-flag": "--annoType",
             "type": "String",
+            "optional": true,
             "value-key": "[ANNOTYPE]",
-            "description": "Specify annotation type that is followed by ANNO= in"
+            "description": "Specify annotation type that is followed by ANNO= in the VCF INFO field, regular expression is allowed"
         },
         {
             "id": "indvDepthMin",
             "name": "indvDepthMin",
             "command-line-flag": "--indvDepthMin",
-            "type": "String",
+            "type": "Number",
+            "optional": true,
             "value-key": "[INDVDEPTHMIN]",
-            "description": "Specify minimum depth(inclusive); of a sample to be"
+            "description": "Specify minimum depth(inclusive); of a sample to be included in analysis"
         },
         {
             "id": "indvDepthMax",
             "name": "indvDepthMax",
             "command-line-flag": "--indvDepthMax",
-            "type": "String",
+            "type": "Number",
+            "optional": true,
             "value-key": "[INDVDEPTHMAX]",
-            "description": "Specify maximum depth(inclusive); of a sample to be"
+            "description": "Specify maximum depth(inclusive); of a sample to be included in the analysis"
         },
         {
             "id": "indvQualMin",
             "name": "indvQualMin",
             "command-line-flag": "--indvQualMin",
-            "type": "String",
+            "type": "Number",
+            "optional": true,
             "value-key": "[INDVQUALMIN]",
-            "description": "Specify minimum depth(inclusive); of a sample to be"
+            "description": "Specify minimum depth(inclusive); of a sample to be included in the analysis"
+        },
+        {
+            "id": "single",
+            "name": "single",
+            "command-line-flag": "--single",
+            "type": "String",
+            "optional": true,
+            "value-key": "[SINGLE]",
+            "description": "Single variant tests, choose from: score, wald, exact, famScore, famLrt, famGrammarGamma, firth",
+            "value-choices": [ "score", "wald", "exact", "famScore", "famLrt", "famGrammarGamma", "firth"]
+        },
+        {
+            "id": "burden",
+            "name": "burden",
+            "command-line-flag": "--burden",
+            "type": "String",
+            "optional": true,
+            "value-key": "[BURDEN]",
+            "description": "Burden tests, choose from: cmc, zeggini, mb, exactCMC, rarecover, cmat, cmcWald",
+            "value-choices": [ "cmc", "zeggini", "mb", "exactCMC", "rarecover", "cmat", "cmcWald"]
+        },
+        {
+            "id": "vt",
+            "name": "vt",
+            "command-line-flag": "--vt",
+            "type": "String",
+            "optional": true,
+            "value-key": "[VT]",
+            "description": "Variable threshold tests, choose from: price, analytic",
+            "value-choices": [ "price", "analytic"]
+        },
+        {
+            "id": "kernel",
+            "name": "kernel",
+            "command-line-flag": "--kernel",
+            "type": "String",
+            "optional": true,
+            "value-key": "[KERNEL]",
+            "description": "Kernal-based tests, choose from: SKAT, KBAC, FamSKAT, SKATO",
+            "value-choices": [ "SKAT", "KBAC", "FamSKAT", "SKATO" ]
         },
         {
             "id": "meta",
