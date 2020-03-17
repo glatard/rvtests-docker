@@ -1,0 +1,464 @@
+{
+    "command-line": "rvtest [INVCF] [INBGEN] [INBGENSAMPLE] [INKGG] [OUT] [OUTPUTRAW] [COVAR] [COVARNAME] [SEX] [PHENO] [INVERSENORMAL] [USERESIDUALASPHENOTYPE] [PHENONAME] [QTL] [MULTIPLEPHENO] [DOSAGE] [MULTIPLEALLELE] [PEOPLEINCLUDEID] [PEOPLEINCLUDEFILE] [PEOPLEEXCLUDEID] [PEOPLEEXCLUDEFILE] [RANGEFILE] [CHR] [SITEFILE] [SITEDEPTHMIN] [SITEDEPTHMAX] [SITEMACMIN] [ANNOTYPE] [INDVDEPTHMIN] [INDVDEPTHMAX] [INDVQUALMIN] [META] [KINSHIP] [XHEMIKINSHIP] [KINSHIPEIGEN] [XHEMIKINSHIPEIGEN] [BOLTPLINK] [BOLTPLINKNOCHECK] [GENEFILE] [GENE] [SETLIST] [SETFILE] [SET] [FREQUPPER] [FREQLOWER] [IMPUTEPHENO] [IMPUTECOV] [CONDITION] [NOWEB] [HIDECOVAR] [OUTPUTID]",
+    "container-image": {
+        "image": "glatard/rvtests:2.1.0",
+        "index": "docker://",
+        "type": "singularity"
+    },
+    "description": "Rvtests, which stands for Rare Variant tests, is a flexible software package for genetic association analysis for sequence datasets. Since its inception, rvtests was developed as a comprehensive tool to support genetic association analysis and meta-analysis. It can analyze both unrelated individual and related (family-based) individuals for both quantitative and binary outcomes. It includes a variety of association tests (e.g. single variant score test, burden test, variable threshold test, SKAT test, fast linear mixed model score test). It takes VCF/BGEN/PLINK format as genotype input file and takes PLINK format phenotype file and covariate file. With new implementation of the BOLT-LMM/MINQUE algorithm as well as a series of software engineering optimizations, our software package is capable of analyzing datasets of up to 1,000,000 individuals in linear mixed models on a computer workstation, which makes our tool one of the very few options for analyzing large biobank scale datasets, such as UK Biobank. RVTESTS supports both single variant and gene-level tests. It also allows for highly effcient generation of covariance matrices between score statistics in RAREMETAL format, which can be used to support the next wave of meta-analysis that incorporates large biobank datasets. A (much) larger sample size can be handled using linear regression or logistic regression models.",
+    "name": "rvtest",
+    "groups": [
+        {
+            "id": "inputs",
+            "name": "Inputs",
+            "members": ["inVcf", "inBgen", "inKgg"],
+            "one-is-required": true
+        },
+        {
+            "id": "basic_input_output",
+            "name": "Basic Input/Output",
+            "members": ["inVcf", "inBgen", "inBgenSample", "inKgg", "out", "outputRaw"]
+        },
+        {
+            "id": "specify_covariate",
+            "name": "Specify Covariate",
+            "members": ["covar", "covarname", "sex"]
+        }
+    ],
+    "inputs": [
+        {
+            "id": "inVcf",
+            "name": "inVcf",
+            "command-line-flag": "--inVcf",
+            "type": "File",
+            "value-key": "[INVCF]",
+            "description": "Input VCF File",
+            "optional": true
+        },
+        {
+            "id": "inBgen",
+            "name": "inBgen",
+            "command-line-flag": "--inBgen",
+            "type": "File",
+            "value-key": "[INBGEN]",
+            "description": "Input BGEN File",
+            "optional": true
+        },
+        {
+            "id": "inBgenSample",
+            "name": "inBgenSample",
+            "command-line-flag": "--inBgenSample",
+            "type": "String",
+            "value-key": "[INBGENSAMPLE]",
+            "description": "Input Sample IDs for the BGEN File",
+            "requires-inputs": [ "inBgen" ],
+            "optional": true
+        },
+        {
+            "id": "inKgg",
+            "name": "inKgg",
+            "command-line-flag": "--inKgg",
+            "type": "File",
+            "value-key": "[INKGG]",
+            "description": "Input KGG File",
+            "optional": true
+        },
+        {
+            "id": "out",
+            "name": "out",
+            "command-line-flag": "--out",
+            "type": "String",
+            "value-key": "[OUT]",
+            "default-value": "rvtest",
+            "optional": true,
+            "description": "Output prefix"
+        },
+        {
+            "id": "outputRaw",
+            "name": "outputRaw",
+            "command-line-flag": "--outputRaw",
+            "type": "Flag",
+            "value-key": "[OUTPUTRAW]",
+            "optional": true,
+            "description": "Output genotypes, phenotype, covariates(if any); and collapsed genotype to tabular files"
+        },
+        {
+            "id": "covar",
+            "name": "covar",
+            "command-line-flag": "--covar",
+            "type": "File",
+            "value-key": "[COVAR]",
+            "optional": true,
+            "description": "Specify covariate file"
+        },
+        {
+            "id": "covarname",
+            "name": "covar-name",
+            "command-line-flag": "--covar-name",
+            "type": "String",
+            "value-key": "[COVARNAME]",
+            "optional": true,
+            "requires-inputs": ["covar"],
+            "description": "Specify the column name in covariate file to be included in analysis"
+        },
+        {
+            "id": "sex",
+            "name": "sex",
+            "command-line-flag": "--sex",
+            "type": "Flag",
+            "value-key": "[SEX]",
+            "optional": true,
+            "requires-inputs": ["covar"],
+            "description": "Include sex (5th column in the PED file) as a covariate"
+        },
+        {
+            "id": "pheno",
+            "name": "pheno",
+            "command-line-flag": "--pheno",
+            "type": "File",
+            "value-key": "[PHENO]",
+            "description": "Specify phenotype file"
+        },
+        {
+            "id": "inverseNormal",
+            "name": "inverseNormal",
+            "command-line-flag": "--inverseNormal",
+            "type": "String",
+            "value-key": "[INVERSENORMAL]",
+            "description": "Transform phenotype like normal distribution"
+        },
+        {
+            "id": "useResidualAsPhenotype",
+            "name": "useResidualAsPhenotype",
+            "command-line-flag": "--useResidualAsPhenotype",
+            "type": "String",
+            "value-key": "[USERESIDUALASPHENOTYPE]",
+            "description": "Fit covariate ~ phenotype, use residual to replace"
+        },
+        {
+            "id": "phenoname",
+            "name": "phenoname",
+            "command-line-flag": "--pheno-name",
+            "type": "String",
+            "value-key": "[PHENONAME]",
+            "description": "Specify which phenotype column to read by header"
+        },
+        {
+            "id": "qtl",
+            "name": "qtl",
+            "command-line-flag": "--qtl",
+            "type": "String",
+            "value-key": "[QTL]",
+            "description": "Treat phenotype as quantitative trait"
+        },
+        {
+            "id": "multiplePheno",
+            "name": "multiplePheno",
+            "command-line-flag": "--multiplePheno",
+            "type": "File",
+            "value-key": "[MULTIPLEPHENO]",
+            "description": "Specify aa template file for analyses of more than one"
+        },
+        {
+            "id": "dosage",
+            "name": "dosage",
+            "command-line-flag": "--dosage",
+            "type": "String",
+            "value-key": "[DOSAGE]",
+            "description": "Specify which dosage tag to use. (e.g. EC or DS);"
+        },
+        {
+            "id": "multipleAllele",
+            "name": "multipleAllele",
+            "command-line-flag": "--multipleAllele",
+            "type": "String",
+            "value-key": "[MULTIPLEALLELE]",
+            "description": "Support multi-allelic genotypes"
+        },
+        {
+            "id": "peopleIncludeID",
+            "name": "peopleIncludeID",
+            "command-line-flag": "--peopleIncludeID",
+            "type": "String",
+            "value-key": "[PEOPLEINCLUDEID]",
+            "description": "List IDs of people that will be included in study"
+        },
+        {
+            "id": "peopleIncludeFile",
+            "name": "peopleIncludeFile",
+            "command-line-flag": "--peopleIncludeFile",
+            "type": "File",
+            "value-key": "[PEOPLEINCLUDEFILE]",
+            "description": "From given file, set IDs of people that will be"
+        },
+        {
+            "id": "peopleExcludeID",
+            "name": "peopleExcludeID",
+            "command-line-flag": "--peopleExcludeID",
+            "type": "String",
+            "value-key": "[PEOPLEEXCLUDEID]",
+            "description": "List IDs of people that will be included in study"
+        },
+        {
+            "id": "peopleExcludeFile",
+            "name": "peopleExcludeFile",
+            "command-line-flag": "--peopleExcludeFile",
+            "type": "File",
+            "value-key": "[PEOPLEEXCLUDEFILE]",
+            "description": "From given file, set IDs of people that will be"
+        },
+        {
+            "id": "rangeFile",
+            "name": "rangeFile",
+            "command-line-flag": "--rangeFile",
+            "type": "File",
+            "value-key": "[RANGEFILE]",
+            "description": "Specify the file containing ranges, please use"
+        },
+        {
+            "id": "chr",
+            "name": "chr",
+            "command-line-flag": "chr",
+            "type": "String",
+            "value-key": "[CHR]",
+            "description": "begin-end format."
+        },
+        {
+            "id": "siteFile",
+            "name": "siteFile",
+            "command-line-flag": "--siteFile",
+            "type": "File",
+            "value-key": "[SITEFILE]",
+            "description": "Specify the file containing sites to include, please"
+        },
+        {
+            "id": "siteDepthMin",
+            "name": "siteDepthMin",
+            "command-line-flag": "--siteDepthMin",
+            "type": "String",
+            "value-key": "[SITEDEPTHMIN]",
+            "description": "Specify minimum depth(inclusive); to be included in"
+        },
+        {
+            "id": "siteDepthMax",
+            "name": "siteDepthMax",
+            "command-line-flag": "--siteDepthMax",
+            "type": "String",
+            "value-key": "[SITEDEPTHMAX]",
+            "description": "Specify maximum depth(inclusive); to be included in"
+        },
+        {
+            "id": "siteMACMin",
+            "name": "siteMACMin",
+            "command-line-flag": "--siteMACMin",
+            "type": "String",
+            "value-key": "[SITEMACMIN]",
+            "description": "Specify minimum Minor Allele Count(inclusive); to be"
+        },
+        {
+            "id": "annoType",
+            "name": "annoType",
+            "command-line-flag": "--annoType",
+            "type": "String",
+            "value-key": "[ANNOTYPE]",
+            "description": "Specify annotation type that is followed by ANNO= in"
+        },
+        {
+            "id": "indvDepthMin",
+            "name": "indvDepthMin",
+            "command-line-flag": "--indvDepthMin",
+            "type": "String",
+            "value-key": "[INDVDEPTHMIN]",
+            "description": "Specify minimum depth(inclusive); of a sample to be"
+        },
+        {
+            "id": "indvDepthMax",
+            "name": "indvDepthMax",
+            "command-line-flag": "--indvDepthMax",
+            "type": "String",
+            "value-key": "[INDVDEPTHMAX]",
+            "description": "Specify maximum depth(inclusive); of a sample to be"
+        },
+        {
+            "id": "indvQualMin",
+            "name": "indvQualMin",
+            "command-line-flag": "--indvQualMin",
+            "type": "String",
+            "value-key": "[INDVQUALMIN]",
+            "description": "Specify minimum depth(inclusive); of a sample to be"
+        },
+        {
+            "id": "meta",
+            "name": "meta",
+            "command-line-flag": "--meta",
+            "type": "String",
+            "value-key": "[META]",
+            "description": "Meta-analysis related functions to generate summary statistics, choose from: score, cov, dominant, recessive",
+            "value-choices": [ "score", "cov", "dominant", "recessive"]
+        },
+        {
+            "id": "kinship",
+            "name": "kinship",
+            "command-line-flag": "--kinship",
+            "type": "File",
+            "value-key": "[KINSHIP]",
+            "description": "Specify a kinship file for autosomal analysis, use"
+        },
+        {
+            "id": "xHemiKinship",
+            "name": "xHemiKinship",
+            "command-line-flag": "--xHemiKinship",
+            "type": "String",
+            "value-key": "[XHEMIKINSHIP]",
+            "description": "Provide kinship for the chromosome X hemizygote region"
+        },
+        {
+            "id": "kinshipEigen",
+            "name": "kinshipEigen",
+            "command-line-flag": "--kinshipEigen",
+            "type": "File",
+            "value-key": "[KINSHIPEIGEN]",
+            "description": "Specify eigen decomposition results of a kinship file"
+        },
+        {
+            "id": "xHemiKinshipEigen",
+            "name": "xHemiKinshipEigen",
+            "command-line-flag": "--xHemiKinshipEigen",
+            "type": "File",
+            "value-key": "[XHEMIKINSHIPEIGEN]",
+            "description": "Specify eigen decomposition results of a kinship file"
+        },
+        {
+            "id": "boltPlink",
+            "name": "boltPlink",
+            "command-line-flag": "--boltPlink",
+            "type": "String",
+            "value-key": "[BOLTPLINK]",
+            "description": "Specify a prefix of binary PLINK inputs for BoltLMM"
+        },
+        {
+            "id": "boltPlinkNoCheck",
+            "name": "boltPlinkNoCheck",
+            "command-line-flag": "--boltPlinkNoCheck",
+            "type": "File",
+            "value-key": "[BOLTPLINKNOCHECK]",
+            "description": "Not checking MAF and missingness for binary PLINK file"
+        },
+        {
+            "id": "geneFile",
+            "name": "geneFile",
+            "command-line-flag": "--geneFile",
+            "type": "File",
+            "value-key": "[GENEFILE]",
+            "description": "Specify a gene file (for burden tests);"
+        },
+        {
+            "id": "gene",
+            "name": "gene",
+            "command-line-flag": "--gene",
+            "type": "String",
+            "value-key": "[GENE]",
+            "description": "Specify which genes to test"
+        },
+        {
+            "id": "setList",
+            "name": "setList",
+            "command-line-flag": "--setList",
+            "type": "String",
+            "value-key": "[SETLIST]",
+            "description": "Specify a list to test (for burden tests);"
+        },
+        {
+            "id": "setFile",
+            "name": "setFile",
+            "command-line-flag": "--setFile",
+            "type": "String",
+            "value-key": "[SETFILE]",
+            "description": "Specify a list file (for burden tests, first 2 columns: setName chr:beg-end);"
+        },
+        {
+            "id": "set",
+            "name": "set",
+            "command-line-flag": "--set",
+            "type": "String",
+            "value-key": "[SET]",
+            "description": "Specify which set to test (1st column);"
+        },
+        {
+            "id": "freqUpper",
+            "name": "freqUpper",
+            "command-line-flag": "--freqUpper",
+            "type": "String",
+            "value-key": "[FREQUPPER]",
+            "description": "Specify upper minor allele frequency bound to be"
+        },
+        {
+            "id": "freqLower",
+            "name": "freqLower",
+            "command-line-flag": "--freqLower",
+            "type": "String",
+            "value-key": "[FREQLOWER]",
+            "description": "Specify lower minor allele frequency bound to be"
+        },
+        {
+            "id": "imputePheno",
+            "name": "imputePheno",
+            "command-line-flag": "--imputePheno",
+            "type": "String",
+            "value-key": "[IMPUTEPHENO]",
+            "description": "Impute phenotype to mean of those have genotypes but no"
+        },
+        {
+            "id": "imputeCov",
+            "name": "imputeCov",
+            "command-line-flag": "--imputeCov",
+            "type": "String",
+            "value-key": "[IMPUTECOV]",
+            "description": "Impute each covariate to its mean, instead of drop"
+        },
+        {
+            "id": "condition",
+            "name": "condition",
+            "command-line-flag": "--condition",
+            "type": "String",
+            "value-key": "[CONDITION]",
+            "description": "Specify markers to be conditions (specify range);"
+        },
+        {
+            "id": "noweb",
+            "name": "noweb",
+            "command-line-flag": "--noweb",
+            "type": "String",
+            "value-key": "[NOWEB]",
+            "description": "Skip checking new version"
+        },
+        {
+            "id": "hidecovar",
+            "name": "hidecovar",
+            "command-line-flag": "--hide-covar",
+            "type": "String",
+            "value-key": "[HIDECOVAR]",
+            "description": "Surpress output lines of covariates"
+        },
+        {
+            "id": "outputID",
+            "name": "outputID",
+            "command-line-flag": "--outputID",
+            "type": "String",
+            "value-key": "[OUTPUTID]",
+            "description": "Output VCF IDs in single-variant assocition results"
+        }
+    ],
+    "output-files": [
+        {
+            "id": "outputs",
+            "name": "Output files",
+            "optional": false,
+            "path-template": "[OUT]*"
+        }
+    ],
+    "schema-version": "0.5",
+    "tags": { "genetics": true,
+              "ENIGMA": true},
+    "tool-version": "2.1.0"
+}
