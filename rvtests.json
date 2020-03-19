@@ -6,7 +6,7 @@
     "description": "Rvtests, which stands for Rare Variant tests, is a flexible software package for genetic association analysis for sequence datasets. Since its inception, rvtests was developed as a comprehensive tool to support genetic association analysis and meta-analysis. It can analyze both unrelated individual and related (family-based) individuals for both quantitative and binary outcomes. It includes a variety of association tests (e.g. single variant score test, burden test, variable threshold test, SKAT test, fast linear mixed model score test). It takes VCF/BGEN/PLINK format as genotype input file and takes PLINK format phenotype file and covariate file. With new implementation of the BOLT-LMM/MINQUE algorithm as well as a series of software engineering optimizations, our software package is capable of analyzing datasets of up to 1,000,000 individuals in linear mixed models on a computer workstation, which makes our tool one of the very few options for analyzing large biobank scale datasets, such as UK Biobank. RVTESTS supports both single variant and gene-level tests. It also allows for highly effcient generation of covariance matrices between score statistics in RAREMETAL format, which can be used to support the next wave of meta-analysis that incorporates large biobank datasets. A (much) larger sample size can be handled using linear regression or logistic regression models.",
     "tool-version": "2.1.0",
     "schema-version": "0.5",
-    "command-line": "rvtest [INVCF] [INBGEN] [INBGENSAMPLE] [INKGG] [OUT] [OUTPUTRAW] [COVAR] [COVARNAME] [SEX] [PHENO] [INVERSENORMAL] [USERESIDUALASPHENOTYPE] [MPHENO] [PHENONAME] [QTL] [MULTIPLEPHENO] [DOSAGE] [MULTIPLEALLELE] [XLABEL] [XPARREGION] [PEOPLEINCLUDEID] [PEOPLEINCLUDEFILE] [PEOPLEEXCLUDEID] [PEOPLEEXCLUDEFILE] [RANGELIST] [RANGEFILE] [SITEFILE] [SITEDEPTHMIN] [SITEDEPTHMAX] [SITEMACMIN] [ANNOTYPE] [INDVDEPTHMIN] [INDVDEPTHMAX] [INDVQUALMIN] [SINGLE] [BURDEN] [VT] [KERNEL] [META] [KINSHIP] [XHEMIKINSHIP] [KINSHIPEIGEN] [XHEMIKINSHIPEIGEN] [BOLTPLINK] [BOLTPLINKNOCHECK] [GENEFILE] [GENE] [SETLIST] [SETFILE] [SET] [FREQUPPER] [FREQLOWER] [IMPUTE] [IMPUTEPHENO] [IMPUTECOV] [CONDITION] [NOWEB] [HIDECOVAR] [NUMTHREAD] [OUTPUTID]",
+    "command-line": "mkdir -p ./[OUT] ; rvtest [INVCF] [INBGEN] [INBGENSAMPLE] [INKGG] --out ./[OUT]/[OUT] [OUTPUTRAW] [COVAR] [COVARNAME] [SEX] [PHENO] [INVERSENORMAL] [USERESIDUALASPHENOTYPE] [MPHENO] [PHENONAME] [QTL] [MULTIPLEPHENO] [DOSAGE] [MULTIPLEALLELE] [XLABEL] [XPARREGION] [PEOPLEINCLUDEID] [PEOPLEINCLUDEFILE] [PEOPLEEXCLUDEID] [PEOPLEEXCLUDEFILE] [RANGELIST] [RANGEFILE] [SITEFILE] [SITEDEPTHMIN] [SITEDEPTHMAX] [SITEMACMIN] [ANNOTYPE] [INDVDEPTHMIN] [INDVDEPTHMAX] [INDVQUALMIN] [SINGLE] [BURDEN] [VT] [KERNEL] [META] [KINSHIP] [XHEMIKINSHIP] [KINSHIPEIGEN] [XHEMIKINSHIPEIGEN] [BOLTPLINK] [BOLTPLINKNOCHECK] [GENEFILE] [GENE] [SETLIST] [SETFILE] [SET] [FREQUPPER] [FREQLOWER] [IMPUTE] [IMPUTEPHENO] [IMPUTECOV] [CONDITION] [NOWEB] [HIDECOVAR] [NUMTHREAD] [OUTPUTID]",
     "container-image": {
         "image": "glatard/rvtests:2.1.0",
         "index": "docker://",
@@ -16,83 +16,162 @@
         {
             "id": "inputs",
             "name": "Inputs",
-            "members": ["inVcf", "inBgen", "inKgg"],
+            "members": [
+                "inVcf",
+                "inBgen",
+                "inKgg"
+            ],
             "one-is-required": true
         },
         {
             "id": "basic_input_output",
             "name": "Basic Input/Output",
-            "members": ["inVcf", "inBgen", "inBgenSample", "inKgg", "out", "outputRaw"]
+            "members": [
+                "inVcf",
+                "inBgen",
+                "inBgenSample",
+                "inKgg",
+                "out",
+                "outputRaw"
+            ]
         },
         {
             "id": "specify_covariate",
             "name": "Specify Covariate",
-            "members": ["covar", "covarname", "sex"]
+            "members": [
+                "covar",
+                "covarname",
+                "sex"
+            ]
         },
         {
             "id": "specify_phenotype",
             "name": "Specify Phenotype",
-            "members": ["pheno", "inverseNormal", "useResidualAsPhenotype", "mpheno", "phenoname", "qtl", "multiplePheno"]
+            "members": [
+                "pheno",
+                "inverseNormal",
+                "useResidualAsPhenotype",
+                "mpheno",
+                "phenoname",
+                "qtl",
+                "multiplePheno"
+            ]
         },
         {
             "id": "specify_genotype",
             "name": "Specify Genotype",
-            "members": ["dosage", "multipleAllele"]
+            "members": [
+                "dosage",
+                "multipleAllele"
+            ]
         },
         {
             "id": "chromosome_x_options",
             "name": "Chromosome X Options",
-            "members": ["xLabel", "xParRegion"]
+            "members": [
+                "xLabel",
+                "xParRegion"
+            ]
         },
         {
             "id": "people_filter",
             "name": "People Filter",
-            "members": ["peopleIncludeID", "peopleIncludeFile", "peopleExcludeID", "peopleExcludeFile"]
+            "members": [
+                "peopleIncludeID",
+                "peopleIncludeFile",
+                "peopleExcludeID",
+                "peopleExcludeFile"
+            ]
         },
         {
             "id": "site_filter",
             "name": "Site Filter",
-            "members": ["rangeList", "rangeFile", "siteFile", "siteDepthMin", "siteDepthMax", "siteMACMin", "annoType"]
+            "members": [
+                "rangeList",
+                "rangeFile",
+                "siteFile",
+                "siteDepthMin",
+                "siteDepthMax",
+                "siteMACMin",
+                "annoType"
+            ]
         },
         {
             "id": "genotype_filter",
             "name": "Genotype Filter",
-            "members": ["indvDepthMin", "indvDepthMax", "indvQualMin"]
+            "members": [
+                "indvDepthMin",
+                "indvDepthMax",
+                "indvQualMin"
+            ]
         },
         {
             "id": "association_model",
             "name": "Association Model",
-            "members": ["single", "burden", "vt", "kernel", "meta"]
+            "members": [
+                "single",
+                "burden",
+                "vt",
+                "kernel",
+                "meta"
+            ]
         },
         {
             "id": "family_based_models",
             "name": "Family-based Models",
-            "members": ["kinship", "xHemiKinship", "kinshipEigen", "xHemiKinshipEigen", "boltPlink", "boltPlinkNoCheck"]
+            "members": [
+                "kinship",
+                "xHemiKinship",
+                "kinshipEigen",
+                "xHemiKinshipEigen",
+                "boltPlink",
+                "boltPlinkNoCheck"
+            ]
         },
         {
             "id": "grouping_unit",
             "name": "Grouping Unit",
-            "members": ["geneFile", "gene", "setList", "setFile", "set"]
+            "members": [
+                "geneFile",
+                "gene",
+                "setList",
+                "setFile",
+                "set"
+            ]
         },
         {
             "id": "frequency_cutoff",
             "name": "Frequency Cutoff",
-            "members": ["freqUpper", "freqLower"]
+            "members": [
+                "freqUpper",
+                "freqLower"
+            ]
         },
         {
             "id": "missing_data",
             "name": "Missing Data",
-            "members": ["impute", "imputePheno", "imputeCov"]
+            "members": [
+                "impute",
+                "imputePheno",
+                "imputeCov"
+            ]
         },
         {
             "id": "conditional_analysis",
             "name": "Conditional Analysis",
-            "members": ["condition"]
+            "members": [
+                "condition"
+            ]
         },
         {
             "id": "auxiliary_functions",
             "name": "Auxiliary Functions",
-            "members": ["noweb", "hidecovar", "numThread", "outputID"]
+            "members": [
+                "noweb",
+                "hidecovar",
+                "numThread",
+                "outputID"
+            ]
         }
     ],
     "inputs": [
@@ -121,7 +200,9 @@
             "type": "String",
             "value-key": "[INBGENSAMPLE]",
             "description": "Input Sample IDs for the BGEN File",
-            "requires-inputs": [ "inBgen" ],
+            "requires-inputs": [
+                "inBgen"
+            ],
             "optional": true
         },
         {
@@ -136,11 +217,9 @@
         {
             "id": "out",
             "name": "out",
-            "command-line-flag": "--out",
             "type": "String",
             "value-key": "[OUT]",
             "default-value": "rvtest",
-            "optional": true,
             "description": "Output prefix"
         },
         {
@@ -168,7 +247,9 @@
             "type": "String",
             "value-key": "[COVARNAME]",
             "optional": true,
-            "requires-inputs": ["covar"],
+            "requires-inputs": [
+                "covar"
+            ],
             "description": "Specify the column names in covariate file to be included in analysis"
         },
         {
@@ -178,7 +259,9 @@
             "type": "Flag",
             "value-key": "[SEX]",
             "optional": true,
-            "requires-inputs": ["covar"],
+            "requires-inputs": [
+                "covar"
+            ],
             "description": "Include sex (5th column in the PED file) as a covariate"
         },
         {
@@ -421,7 +504,15 @@
             "optional": true,
             "value-key": "[SINGLE]",
             "description": "Single variant tests, choose from: score, wald, exact, famScore, famLrt, famGrammarGamma, firth",
-            "value-choices": [ "score", "wald", "exact", "famScore", "famLrt", "famGrammarGamma", "firth"]
+            "value-choices": [
+                "score",
+                "wald",
+                "exact",
+                "famScore",
+                "famLrt",
+                "famGrammarGamma",
+                "firth"
+            ]
         },
         {
             "id": "burden",
@@ -431,7 +522,15 @@
             "optional": true,
             "value-key": "[BURDEN]",
             "description": "Burden tests, choose from: cmc, zeggini, mb, exactCMC, rarecover, cmat, cmcWald",
-            "value-choices": [ "cmc", "zeggini", "mb", "exactCMC", "rarecover", "cmat", "cmcWald"]
+            "value-choices": [
+                "cmc",
+                "zeggini",
+                "mb",
+                "exactCMC",
+                "rarecover",
+                "cmat",
+                "cmcWald"
+            ]
         },
         {
             "id": "vt",
@@ -441,7 +540,10 @@
             "optional": true,
             "value-key": "[VT]",
             "description": "Variable threshold tests, choose from: price, analytic",
-            "value-choices": [ "price", "analytic"]
+            "value-choices": [
+                "price",
+                "analytic"
+            ]
         },
         {
             "id": "kernel",
@@ -451,7 +553,12 @@
             "optional": true,
             "value-key": "[KERNEL]",
             "description": "Kernal-based tests, choose from: SKAT, KBAC, FamSKAT, SKATO",
-            "value-choices": [ "SKAT", "KBAC", "FamSKAT", "SKATO" ]
+            "value-choices": [
+                "SKAT",
+                "KBAC",
+                "FamSKAT",
+                "SKATO"
+            ]
         },
         {
             "id": "meta",
@@ -463,7 +570,12 @@
             "list-separator": ",",
             "optional": true,
             "description": "Meta-analysis related functions to generate summary statistics, choose from: score, cov, dominant, recessive",
-            "value-choices": [ "score", "cov", "dominant", "recessive"]
+            "value-choices": [
+                "score",
+                "cov",
+                "dominant",
+                "recessive"
+            ]
         },
         {
             "id": "kinship",
@@ -590,7 +702,11 @@
             "type": "String",
             "value-key": "[IMPUTE]",
             "optional": true,
-            "value-choices": ["mean", "hwe", "drop"],
+            "value-choices": [
+                "mean",
+                "hwe",
+                "drop"
+            ],
             "description": "Impute missing genotype (default:mean):  mean, hwe, and drop"
         },
         {
@@ -662,14 +778,16 @@
     ],
     "output-files": [
         {
-            "id": "outputs",
-            "name": "Output files",
+            "id": "output_dir",
+            "name": "Output directory",
             "optional": false,
-            "path-template": "[OUT]*"
+            "path-template": "[OUT]"
         }
     ],
-    "tags": { "genetics": true,
-        "ENIGMA": true},
+    "tags": {
+        "genetics": true,
+        "ENIGMA": true
+    },
     "tests": [
         {
             "name": "test1",
@@ -742,7 +860,10 @@
             "invocation": {
                 "pheno": "/usr/share/example/pheno",
                 "inVcf": "/usr/share/example/example.vcf",
-                "meta": ["score","cov"],
+                "meta": [
+                    "score",
+                    "cov"
+                ],
                 "covar": "/usr/share/example/covar",
                 "covarname": "c1,c2",
                 "useResidualAsPhenotype": true,
@@ -754,5 +875,6 @@
                 "exit-code": 0
             }
         }
-    ]
+    ],
+    "doi": "10.5281/zenodo.3713759"
 }
