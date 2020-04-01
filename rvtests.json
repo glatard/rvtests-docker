@@ -12,7 +12,9 @@
         "index": "docker://",
         "type": "singularity"
     },
-    "online-platform-urls": [ "https://portal.cbrain.mcgill.ca" ],
+    "online-platform-urls": [
+        "https://portal.cbrain.mcgill.ca"
+    ],
     "groups": [
         {
             "id": "inputs",
@@ -877,5 +879,8 @@
             }
         }
     ],
-    "doi": "10.5281/zenodo.3718605"
+    "doi": "10.5281/zenodo.3736810",
+    "suggested-resources": {
+        "walltime-estimate": 3600
+    } 
 }
